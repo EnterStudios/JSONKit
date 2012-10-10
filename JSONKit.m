@@ -2920,146 +2920,146 @@ errorExit:
 
 @end
 
-@implementation NSString (JSONKitSerializing)
-
-////////////
-#pragma mark Methods for serializing a single NSString.
-////////////
-
-// Useful for those who need to serialize just a NSString.  Otherwise you would have to do something like [NSArray arrayWithObject:stringToBeJSONSerialized], serializing the array, and then chopping of the extra ^\[.*\]$ square brackets.
-
-// NSData returning methods...
-
-- (NSData *)JSONData
-{
-  return([self JSONDataWithOptions:JKSerializeOptionNone includeQuotes:YES error:NULL]);
-}
-
-- (NSData *)JSONDataWithOptions:(TapItJKSerializeOptionFlags)serializeOptions includeQuotes:(BOOL)includeQuotes error:(NSError **)error
-{
-  return([TapItJKSerializer serializeObject:self options:serializeOptions encodeOption:(TapItJKEncodeOptionAsData | ((includeQuotes == NO) ? TapItJKEncodeOptionStringObjTrimQuotes : 0UL) | TapItJKEncodeOptionStringObj) block:NULL delegate:NULL selector:NULL error:error]);
-}
-
-// NSString returning methods...
-
-- (NSString *)JSONString
-{
-  return([self JSONStringWithOptions:JKSerializeOptionNone includeQuotes:YES error:NULL]);
-}
-
-- (NSString *)JSONStringWithOptions:(TapItJKSerializeOptionFlags)serializeOptions includeQuotes:(BOOL)includeQuotes error:(NSError **)error
-{
-  return([TapItJKSerializer serializeObject:self options:serializeOptions encodeOption:(TapItJKEncodeOptionAsString | ((includeQuotes == NO) ? TapItJKEncodeOptionStringObjTrimQuotes : 0UL) | TapItJKEncodeOptionStringObj) block:NULL delegate:NULL selector:NULL error:error]);
-}
-
-@end
-
-@implementation NSArray (JSONKitSerializing)
-
-// NSData returning methods...
-
-- (NSData *)JSONData
-{
-  return([TapItJKSerializer serializeObject:self options:JKSerializeOptionNone encodeOption:(TapItJKEncodeOptionAsData | TapItJKEncodeOptionCollectionObj) block:NULL delegate:NULL selector:NULL error:NULL]);
-}
-
-- (NSData *)JSONDataWithOptions:(TapItJKSerializeOptionFlags)serializeOptions error:(NSError **)error
-{
-  return([TapItJKSerializer serializeObject:self options:serializeOptions encodeOption:(TapItJKEncodeOptionAsData | TapItJKEncodeOptionCollectionObj) block:NULL delegate:NULL selector:NULL error:error]);
-}
-
-- (NSData *)JSONDataWithOptions:(TapItJKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingDelegate:(id)delegate selector:(SEL)selector error:(NSError **)error
-{
-  return([TapItJKSerializer serializeObject:self options:serializeOptions encodeOption:(TapItJKEncodeOptionAsData | TapItJKEncodeOptionCollectionObj) block:NULL delegate:delegate selector:selector error:error]);
-}
-
-// NSString returning methods...
-
-- (NSString *)JSONString
-{
-  return([TapItJKSerializer serializeObject:self options:JKSerializeOptionNone encodeOption:(TapItJKEncodeOptionAsString | TapItJKEncodeOptionCollectionObj) block:NULL delegate:NULL selector:NULL error:NULL]);
-}
-
-- (NSString *)JSONStringWithOptions:(TapItJKSerializeOptionFlags)serializeOptions error:(NSError **)error
-{
-  return([TapItJKSerializer serializeObject:self options:serializeOptions encodeOption:(TapItJKEncodeOptionAsString | TapItJKEncodeOptionCollectionObj) block:NULL delegate:NULL selector:NULL error:error]);
-}
-
-- (NSString *)JSONStringWithOptions:(TapItJKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingDelegate:(id)delegate selector:(SEL)selector error:(NSError **)error
-{
-  return([TapItJKSerializer serializeObject:self options:serializeOptions encodeOption:(TapItJKEncodeOptionAsString | TapItJKEncodeOptionCollectionObj) block:NULL delegate:delegate selector:selector error:error]);
-}
-
-@end
-
-@implementation NSDictionary (JSONKitSerializing)
-
-// NSData returning methods...
-
-- (NSData *)JSONData
-{
-  return([TapItJKSerializer serializeObject:self options:JKSerializeOptionNone encodeOption:(TapItJKEncodeOptionAsData | TapItJKEncodeOptionCollectionObj) block:NULL delegate:NULL selector:NULL error:NULL]);
-}
-
-- (NSData *)JSONDataWithOptions:(TapItJKSerializeOptionFlags)serializeOptions error:(NSError **)error
-{
-  return([TapItJKSerializer serializeObject:self options:serializeOptions encodeOption:(TapItJKEncodeOptionAsData | TapItJKEncodeOptionCollectionObj) block:NULL delegate:NULL selector:NULL error:error]);
-}
-
-- (NSData *)JSONDataWithOptions:(TapItJKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingDelegate:(id)delegate selector:(SEL)selector error:(NSError **)error
-{
-  return([TapItJKSerializer serializeObject:self options:serializeOptions encodeOption:(TapItJKEncodeOptionAsData | TapItJKEncodeOptionCollectionObj) block:NULL delegate:delegate selector:selector error:error]);
-}
-
-// NSString returning methods...
-
-- (NSString *)JSONString
-{
-  return([TapItJKSerializer serializeObject:self options:JKSerializeOptionNone encodeOption:(TapItJKEncodeOptionAsString | TapItJKEncodeOptionCollectionObj) block:NULL delegate:NULL selector:NULL error:NULL]);
-}
-
-- (NSString *)JSONStringWithOptions:(TapItJKSerializeOptionFlags)serializeOptions error:(NSError **)error
-{
-  return([TapItJKSerializer serializeObject:self options:serializeOptions encodeOption:(TapItJKEncodeOptionAsString | TapItJKEncodeOptionCollectionObj) block:NULL delegate:NULL selector:NULL error:error]);
-}
-
-- (NSString *)JSONStringWithOptions:(TapItJKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingDelegate:(id)delegate selector:(SEL)selector error:(NSError **)error
-{
-  return([TapItJKSerializer serializeObject:self options:serializeOptions encodeOption:(TapItJKEncodeOptionAsString | TapItJKEncodeOptionCollectionObj) block:NULL delegate:delegate selector:selector error:error]);
-}
-
-@end
-
-
-#ifdef __BLOCKS__
-
-@implementation NSArray (TapItJSONKitSerializingBlockAdditions)
-
-- (NSData *)JSONDataWithOptions:(TapItJKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingBlock:(id(^)(id object))block error:(NSError **)error
-{
-  return([TapItJKSerializer serializeObject:self options:serializeOptions encodeOption:(TapItJKEncodeOptionAsData | TapItJKEncodeOptionCollectionObj) block:block delegate:NULL selector:NULL error:error]);
-}
-
-- (NSString *)JSONStringWithOptions:(TapItJKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingBlock:(id(^)(id object))block error:(NSError **)error
-{
-  return([TapItJKSerializer serializeObject:self options:serializeOptions encodeOption:(TapItJKEncodeOptionAsString | TapItJKEncodeOptionCollectionObj) block:block delegate:NULL selector:NULL error:error]);
-}
-
-@end
-
-@implementation NSDictionary (TapItJSONKitSerializingBlockAdditions)
-
-- (NSData *)JSONDataWithOptions:(TapItJKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingBlock:(id(^)(id object))block error:(NSError **)error
-{
-  return([TapItJKSerializer serializeObject:self options:serializeOptions encodeOption:(TapItJKEncodeOptionAsData | TapItJKEncodeOptionCollectionObj) block:block delegate:NULL selector:NULL error:error]);
-}
-
-- (NSString *)JSONStringWithOptions:(TapItJKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingBlock:(id(^)(id object))block error:(NSError **)error
-{
-  return([TapItJKSerializer serializeObject:self options:serializeOptions encodeOption:(TapItJKEncodeOptionAsString | TapItJKEncodeOptionCollectionObj) block:block delegate:NULL selector:NULL error:error]);
-}
-
-@end
-
-#endif // __BLOCKS__
+//@implementation NSString (JSONKitSerializing)
+//
+//////////////
+//#pragma mark Methods for serializing a single NSString.
+//////////////
+//
+//// Useful for those who need to serialize just a NSString.  Otherwise you would have to do something like [NSArray arrayWithObject:stringToBeJSONSerialized], serializing the array, and then chopping of the extra ^\[.*\]$ square brackets.
+//
+//// NSData returning methods...
+//
+//- (NSData *)JSONData
+//{
+//  return([self JSONDataWithOptions:JKSerializeOptionNone includeQuotes:YES error:NULL]);
+//}
+//
+//- (NSData *)JSONDataWithOptions:(TapItJKSerializeOptionFlags)serializeOptions includeQuotes:(BOOL)includeQuotes error:(NSError **)error
+//{
+//  return([TapItJKSerializer serializeObject:self options:serializeOptions encodeOption:(TapItJKEncodeOptionAsData | ((includeQuotes == NO) ? TapItJKEncodeOptionStringObjTrimQuotes : 0UL) | TapItJKEncodeOptionStringObj) block:NULL delegate:NULL selector:NULL error:error]);
+//}
+//
+//// NSString returning methods...
+//
+//- (NSString *)JSONString
+//{
+//  return([self JSONStringWithOptions:JKSerializeOptionNone includeQuotes:YES error:NULL]);
+//}
+//
+//- (NSString *)JSONStringWithOptions:(TapItJKSerializeOptionFlags)serializeOptions includeQuotes:(BOOL)includeQuotes error:(NSError **)error
+//{
+//  return([TapItJKSerializer serializeObject:self options:serializeOptions encodeOption:(TapItJKEncodeOptionAsString | ((includeQuotes == NO) ? TapItJKEncodeOptionStringObjTrimQuotes : 0UL) | TapItJKEncodeOptionStringObj) block:NULL delegate:NULL selector:NULL error:error]);
+//}
+//
+//@end
+//
+//@implementation NSArray (JSONKitSerializing)
+//
+//// NSData returning methods...
+//
+//- (NSData *)JSONData
+//{
+//  return([TapItJKSerializer serializeObject:self options:JKSerializeOptionNone encodeOption:(TapItJKEncodeOptionAsData | TapItJKEncodeOptionCollectionObj) block:NULL delegate:NULL selector:NULL error:NULL]);
+//}
+//
+//- (NSData *)JSONDataWithOptions:(TapItJKSerializeOptionFlags)serializeOptions error:(NSError **)error
+//{
+//  return([TapItJKSerializer serializeObject:self options:serializeOptions encodeOption:(TapItJKEncodeOptionAsData | TapItJKEncodeOptionCollectionObj) block:NULL delegate:NULL selector:NULL error:error]);
+//}
+//
+//- (NSData *)JSONDataWithOptions:(TapItJKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingDelegate:(id)delegate selector:(SEL)selector error:(NSError **)error
+//{
+//  return([TapItJKSerializer serializeObject:self options:serializeOptions encodeOption:(TapItJKEncodeOptionAsData | TapItJKEncodeOptionCollectionObj) block:NULL delegate:delegate selector:selector error:error]);
+//}
+//
+//// NSString returning methods...
+//
+//- (NSString *)JSONString
+//{
+//  return([TapItJKSerializer serializeObject:self options:JKSerializeOptionNone encodeOption:(TapItJKEncodeOptionAsString | TapItJKEncodeOptionCollectionObj) block:NULL delegate:NULL selector:NULL error:NULL]);
+//}
+//
+//- (NSString *)JSONStringWithOptions:(TapItJKSerializeOptionFlags)serializeOptions error:(NSError **)error
+//{
+//  return([TapItJKSerializer serializeObject:self options:serializeOptions encodeOption:(TapItJKEncodeOptionAsString | TapItJKEncodeOptionCollectionObj) block:NULL delegate:NULL selector:NULL error:error]);
+//}
+//
+//- (NSString *)JSONStringWithOptions:(TapItJKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingDelegate:(id)delegate selector:(SEL)selector error:(NSError **)error
+//{
+//  return([TapItJKSerializer serializeObject:self options:serializeOptions encodeOption:(TapItJKEncodeOptionAsString | TapItJKEncodeOptionCollectionObj) block:NULL delegate:delegate selector:selector error:error]);
+//}
+//
+//@end
+//
+//@implementation NSDictionary (JSONKitSerializing)
+//
+//// NSData returning methods...
+//
+//- (NSData *)JSONData
+//{
+//  return([TapItJKSerializer serializeObject:self options:JKSerializeOptionNone encodeOption:(TapItJKEncodeOptionAsData | TapItJKEncodeOptionCollectionObj) block:NULL delegate:NULL selector:NULL error:NULL]);
+//}
+//
+//- (NSData *)JSONDataWithOptions:(TapItJKSerializeOptionFlags)serializeOptions error:(NSError **)error
+//{
+//  return([TapItJKSerializer serializeObject:self options:serializeOptions encodeOption:(TapItJKEncodeOptionAsData | TapItJKEncodeOptionCollectionObj) block:NULL delegate:NULL selector:NULL error:error]);
+//}
+//
+//- (NSData *)JSONDataWithOptions:(TapItJKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingDelegate:(id)delegate selector:(SEL)selector error:(NSError **)error
+//{
+//  return([TapItJKSerializer serializeObject:self options:serializeOptions encodeOption:(TapItJKEncodeOptionAsData | TapItJKEncodeOptionCollectionObj) block:NULL delegate:delegate selector:selector error:error]);
+//}
+//
+//// NSString returning methods...
+//
+//- (NSString *)JSONString
+//{
+//  return([TapItJKSerializer serializeObject:self options:JKSerializeOptionNone encodeOption:(TapItJKEncodeOptionAsString | TapItJKEncodeOptionCollectionObj) block:NULL delegate:NULL selector:NULL error:NULL]);
+//}
+//
+//- (NSString *)JSONStringWithOptions:(TapItJKSerializeOptionFlags)serializeOptions error:(NSError **)error
+//{
+//  return([TapItJKSerializer serializeObject:self options:serializeOptions encodeOption:(TapItJKEncodeOptionAsString | TapItJKEncodeOptionCollectionObj) block:NULL delegate:NULL selector:NULL error:error]);
+//}
+//
+//- (NSString *)JSONStringWithOptions:(TapItJKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingDelegate:(id)delegate selector:(SEL)selector error:(NSError **)error
+//{
+//  return([TapItJKSerializer serializeObject:self options:serializeOptions encodeOption:(TapItJKEncodeOptionAsString | TapItJKEncodeOptionCollectionObj) block:NULL delegate:delegate selector:selector error:error]);
+//}
+//
+//@end
+//
+//
+//#ifdef __BLOCKS__
+//
+//@implementation NSArray (TapItJSONKitSerializingBlockAdditions)
+//
+//- (NSData *)JSONDataWithOptions:(TapItJKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingBlock:(id(^)(id object))block error:(NSError **)error
+//{
+//  return([TapItJKSerializer serializeObject:self options:serializeOptions encodeOption:(TapItJKEncodeOptionAsData | TapItJKEncodeOptionCollectionObj) block:block delegate:NULL selector:NULL error:error]);
+//}
+//
+//- (NSString *)JSONStringWithOptions:(TapItJKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingBlock:(id(^)(id object))block error:(NSError **)error
+//{
+//  return([TapItJKSerializer serializeObject:self options:serializeOptions encodeOption:(TapItJKEncodeOptionAsString | TapItJKEncodeOptionCollectionObj) block:block delegate:NULL selector:NULL error:error]);
+//}
+//
+//@end
+//
+//@implementation NSDictionary (TapItJSONKitSerializingBlockAdditions)
+//
+//- (NSData *)JSONDataWithOptions:(TapItJKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingBlock:(id(^)(id object))block error:(NSError **)error
+//{
+//  return([TapItJKSerializer serializeObject:self options:serializeOptions encodeOption:(TapItJKEncodeOptionAsData | TapItJKEncodeOptionCollectionObj) block:block delegate:NULL selector:NULL error:error]);
+//}
+//
+//- (NSString *)JSONStringWithOptions:(TapItJKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingBlock:(id(^)(id object))block error:(NSError **)error
+//{
+//  return([TapItJKSerializer serializeObject:self options:serializeOptions encodeOption:(TapItJKEncodeOptionAsString | TapItJKEncodeOptionCollectionObj) block:block delegate:NULL selector:NULL error:error]);
+//}
+//
+//@end
+//
+//#endif // __BLOCKS__
 
