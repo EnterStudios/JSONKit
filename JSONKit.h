@@ -104,7 +104,7 @@ typedef unsigned int   NSUInteger;
 #define JSONKIT_VERSION_MAJOR 1
 #define JSONKIT_VERSION_MINOR 4
 
-typedef NSUInteger JKFlags;
+typedef NSUInteger TapItJKFlags;
 
 /*
   JKParseOptionComments        : Allow C style // and /_* ... *_/ (without a _, obviously) comments in JSON.
@@ -123,7 +123,7 @@ enum {
   JKParseOptionPermitTextAfterValidJSON = (1 << 3),
   JKParseOptionValidFlags               = (JKParseOptionComments | JKParseOptionUnicodeNewlines | JKParseOptionLooseUnicode | JKParseOptionPermitTextAfterValidJSON),
 };
-typedef JKFlags JKParseOptionFlags;
+typedef TapItJKFlags TapItJKParseOptionFlags;
 
 enum {
   JKSerializeOptionNone                 = 0,
@@ -132,20 +132,20 @@ enum {
   JKSerializeOptionEscapeForwardSlashes = (1 << 4),
   JKSerializeOptionValidFlags           = (JKSerializeOptionPretty | JKSerializeOptionEscapeUnicode | JKSerializeOptionEscapeForwardSlashes),
 };
-typedef JKFlags JKSerializeOptionFlags;
+typedef TapItJKFlags TapItJKSerializeOptionFlags;
 
 #ifdef    __OBJC__
 
-typedef struct JKParseState JKParseState; // Opaque internal, private type.
+typedef struct JKParseState TapItJKParseState; // Opaque internal, private type.
 
 // As a general rule of thumb, if you use a method that doesn't accept a JKParseOptionFlags argument, it defaults to JKParseOptionStrict
 
-@interface JSONDecoder : NSObject {
-  JKParseState *parseState;
+@interface TapItJSONDecoder : NSObject {
+  TapItJKParseState *parseState;
 }
 + (id)decoder;
-+ (id)decoderWithParseOptions:(JKParseOptionFlags)parseOptionFlags;
-- (id)initWithParseOptions:(JKParseOptionFlags)parseOptionFlags;
++ (id)decoderWithParseOptions:(TapItJKParseOptionFlags)parseOptionFlags;
+- (id)initWithParseOptions:(TapItJKParseOptionFlags)parseOptionFlags;
 - (void)clearCache;
 
 // The parse... methods were deprecated in v1.4 in favor of the v1.4 objectWith... methods.
@@ -171,75 +171,75 @@ typedef struct JKParseState JKParseState; // Opaque internal, private type.
 
 @end
 
-////////////
-#pragma mark Deserializing methods
-////////////
-
-@interface NSString (JSONKitDeserializing)
-- (id)objectFromJSONString;
-- (id)objectFromJSONStringWithParseOptions:(JKParseOptionFlags)parseOptionFlags;
-- (id)objectFromJSONStringWithParseOptions:(JKParseOptionFlags)parseOptionFlags error:(NSError **)error;
-- (id)mutableObjectFromJSONString;
-- (id)mutableObjectFromJSONStringWithParseOptions:(JKParseOptionFlags)parseOptionFlags;
-- (id)mutableObjectFromJSONStringWithParseOptions:(JKParseOptionFlags)parseOptionFlags error:(NSError **)error;
-@end
-
-@interface NSData (JSONKitDeserializing)
-// The NSData MUST be UTF8 encoded JSON.
-- (id)objectFromJSONData;
-- (id)objectFromJSONDataWithParseOptions:(JKParseOptionFlags)parseOptionFlags;
-- (id)objectFromJSONDataWithParseOptions:(JKParseOptionFlags)parseOptionFlags error:(NSError **)error;
-- (id)mutableObjectFromJSONData;
-- (id)mutableObjectFromJSONDataWithParseOptions:(JKParseOptionFlags)parseOptionFlags;
-- (id)mutableObjectFromJSONDataWithParseOptions:(JKParseOptionFlags)parseOptionFlags error:(NSError **)error;
-@end
-
-////////////
-#pragma mark Serializing methods
-////////////
-  
-@interface NSString (JSONKitSerializing)
-// Convenience methods for those that need to serialize the receiving NSString (i.e., instead of having to serialize a NSArray with a single NSString, you can "serialize to JSON" just the NSString).
-// Normally, a string that is serialized to JSON has quotation marks surrounding it, which you may or may not want when serializing a single string, and can be controlled with includeQuotes:
-// includeQuotes:YES `a "test"...` -> `"a \"test\"..."`
-// includeQuotes:NO  `a "test"...` -> `a \"test\"...`
-- (NSData *)JSONData;     // Invokes JSONDataWithOptions:JKSerializeOptionNone   includeQuotes:YES
-- (NSData *)JSONDataWithOptions:(JKSerializeOptionFlags)serializeOptions includeQuotes:(BOOL)includeQuotes error:(NSError **)error;
-- (NSString *)JSONString; // Invokes JSONStringWithOptions:JKSerializeOptionNone includeQuotes:YES
-- (NSString *)JSONStringWithOptions:(JKSerializeOptionFlags)serializeOptions includeQuotes:(BOOL)includeQuotes error:(NSError **)error;
-@end
-
-@interface NSArray (JSONKitSerializing)
-- (NSData *)JSONData;
-- (NSData *)JSONDataWithOptions:(JKSerializeOptionFlags)serializeOptions error:(NSError **)error;
-- (NSData *)JSONDataWithOptions:(JKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingDelegate:(id)delegate selector:(SEL)selector error:(NSError **)error;
-- (NSString *)JSONString;
-- (NSString *)JSONStringWithOptions:(JKSerializeOptionFlags)serializeOptions error:(NSError **)error;
-- (NSString *)JSONStringWithOptions:(JKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingDelegate:(id)delegate selector:(SEL)selector error:(NSError **)error;
-@end
-
-@interface NSDictionary (JSONKitSerializing)
-- (NSData *)JSONData;
-- (NSData *)JSONDataWithOptions:(JKSerializeOptionFlags)serializeOptions error:(NSError **)error;
-- (NSData *)JSONDataWithOptions:(JKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingDelegate:(id)delegate selector:(SEL)selector error:(NSError **)error;
-- (NSString *)JSONString;
-- (NSString *)JSONStringWithOptions:(JKSerializeOptionFlags)serializeOptions error:(NSError **)error;
-- (NSString *)JSONStringWithOptions:(JKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingDelegate:(id)delegate selector:(SEL)selector error:(NSError **)error;
-@end
-
-#ifdef __BLOCKS__
-
-@interface NSArray (JSONKitSerializingBlockAdditions)
-- (NSData *)JSONDataWithOptions:(JKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingBlock:(id(^)(id object))block error:(NSError **)error;
-- (NSString *)JSONStringWithOptions:(JKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingBlock:(id(^)(id object))block error:(NSError **)error;
-@end
-
-@interface NSDictionary (JSONKitSerializingBlockAdditions)
-- (NSData *)JSONDataWithOptions:(JKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingBlock:(id(^)(id object))block error:(NSError **)error;
-- (NSString *)JSONStringWithOptions:(JKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingBlock:(id(^)(id object))block error:(NSError **)error;
-@end
-  
-#endif
+//////////////
+//#pragma mark Deserializing methods
+//////////////
+//
+//@interface NSString (JSONKitDeserializing)
+//- (id)objectFromJSONString;
+//- (id)objectFromJSONStringWithParseOptions:(TapItJKParseOptionFlags)parseOptionFlags;
+//- (id)objectFromJSONStringWithParseOptions:(TapItJKParseOptionFlags)parseOptionFlags error:(NSError **)error;
+//- (id)mutableObjectFromJSONString;
+//- (id)mutableObjectFromJSONStringWithParseOptions:(TapItJKParseOptionFlags)parseOptionFlags;
+//- (id)mutableObjectFromJSONStringWithParseOptions:(TapItJKParseOptionFlags)parseOptionFlags error:(NSError **)error;
+//@end
+//
+//@interface NSData (JSONKitDeserializing)
+//// The NSData MUST be UTF8 encoded JSON.
+//- (id)objectFromJSONData;
+//- (id)objectFromJSONDataWithParseOptions:(TapItJKParseOptionFlags)parseOptionFlags;
+//- (id)objectFromJSONDataWithParseOptions:(TapItJKParseOptionFlags)parseOptionFlags error:(NSError **)error;
+//- (id)mutableObjectFromJSONData;
+//- (id)mutableObjectFromJSONDataWithParseOptions:(TapItJKParseOptionFlags)parseOptionFlags;
+//- (id)mutableObjectFromJSONDataWithParseOptions:(TapItJKParseOptionFlags)parseOptionFlags error:(NSError **)error;
+//@end
+//
+//////////////
+//#pragma mark Serializing methods
+//////////////
+//  
+//@interface NSString (JSONKitSerializing)
+//// Convenience methods for those that need to serialize the receiving NSString (i.e., instead of having to serialize a NSArray with a single NSString, you can "serialize to JSON" just the NSString).
+//// Normally, a string that is serialized to JSON has quotation marks surrounding it, which you may or may not want when serializing a single string, and can be controlled with includeQuotes:
+//// includeQuotes:YES `a "test"...` -> `"a \"test\"..."`
+//// includeQuotes:NO  `a "test"...` -> `a \"test\"...`
+//- (NSData *)JSONData;     // Invokes JSONDataWithOptions:JKSerializeOptionNone   includeQuotes:YES
+//- (NSData *)JSONDataWithOptions:(TapItJKSerializeOptionFlags)serializeOptions includeQuotes:(BOOL)includeQuotes error:(NSError **)error;
+//- (NSString *)JSONString; // Invokes JSONStringWithOptions:JKSerializeOptionNone includeQuotes:YES
+//- (NSString *)JSONStringWithOptions:(TapItJKSerializeOptionFlags)serializeOptions includeQuotes:(BOOL)includeQuotes error:(NSError **)error;
+//@end
+//
+//@interface NSArray (JSONKitSerializing)
+//- (NSData *)JSONData;
+//- (NSData *)JSONDataWithOptions:(TapItJKSerializeOptionFlags)serializeOptions error:(NSError **)error;
+//- (NSData *)JSONDataWithOptions:(TapItJKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingDelegate:(id)delegate selector:(SEL)selector error:(NSError **)error;
+//- (NSString *)JSONString;
+//- (NSString *)JSONStringWithOptions:(TapItJKSerializeOptionFlags)serializeOptions error:(NSError **)error;
+//- (NSString *)JSONStringWithOptions:(TapItJKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingDelegate:(id)delegate selector:(SEL)selector error:(NSError **)error;
+//@end
+//
+//@interface NSDictionary (JSONKitSerializing)
+//- (NSData *)JSONData;
+//- (NSData *)JSONDataWithOptions:(TapItJKSerializeOptionFlags)serializeOptions error:(NSError **)error;
+//- (NSData *)JSONDataWithOptions:(TapItJKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingDelegate:(id)delegate selector:(SEL)selector error:(NSError **)error;
+//- (NSString *)JSONString;
+//- (NSString *)JSONStringWithOptions:(TapItJKSerializeOptionFlags)serializeOptions error:(NSError **)error;
+//- (NSString *)JSONStringWithOptions:(TapItJKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingDelegate:(id)delegate selector:(SEL)selector error:(NSError **)error;
+//@end
+//
+//#ifdef __BLOCKS__
+//
+//@interface NSArray (TapItJSONKitSerializingBlockAdditions)
+//- (NSData *)JSONDataWithOptions:(TapItJKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingBlock:(id(^)(id object))block error:(NSError **)error;
+//- (NSString *)JSONStringWithOptions:(TapItJKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingBlock:(id(^)(id object))block error:(NSError **)error;
+//@end
+//
+//@interface NSDictionary (TapItJSONKitSerializingBlockAdditions)
+//- (NSData *)JSONDataWithOptions:(TapItJKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingBlock:(id(^)(id object))block error:(NSError **)error;
+//- (NSString *)JSONStringWithOptions:(TapItJKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingBlock:(id(^)(id object))block error:(NSError **)error;
+//@end
+//  
+//#endif
 
 
 #endif // __OBJC__
